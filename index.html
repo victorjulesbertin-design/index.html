@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ZinzinBot - Wiki & Collection</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323:wght@400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0f0f0f;
+      --bg2: #1a1a1a;
+      --bg3: #222;
+      --border: #333;
+      --text: #e8e8e8;
+      --text-dim: #888;
+      --green: #4ade80;
+      --blue: #60a5fa;
+      --purple: #a78bfa;
+      --orange: #fb923c;
+      --red: #f87171;
+      --gold: #fbbf24;
+      --commune: #9ca3af;
+      --rare: #4ade80;
+      --epique: #a78bfa;
+      --legendaire: #fb923c;
+      --mythique: #f87171;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      background-image:
+        radial-gradient(circle at 20% 20%, rgba(74,222,128,0.04) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(167,139,250,0.04) 0%, transparent 50%);
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(15,15,15,0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 2rem;
+      padding: 0.8rem 2rem;
+    }
+    .nav-logo {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.65rem;
+      color: var(--green);
+      letter-spacing: 1px;
+      text-shadow: 0 0 20px rgba(74,222,128,0.5);
+    }
+    .nav-links { display: flex; gap: 0.5rem; margin-left: auto; }
+    .nav-link {
+      padding: 0.4rem 1rem;
+      border-radius: 6px;
+      color: var(--text-dim);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none; background: none;
+    }
+    .nav-link:hover, .nav-link.active { color: var(--text); background: var(--bg3); }
+    .nav-link.active { color: var(--green); }
+
+    /* ── PAGES ── */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ── HERO ── */
+    .hero {
+      text-align: center;
+      padding: 4rem 2rem 3rem;
+      position: relative;
+    }
+    .hero-pixel {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(1.2rem, 4vw, 2.2rem);
+      color: var(--green);
+      text-shadow: 0 0 30px rgba(74,222,128,0.4), 3px 3px 0 rgba(0,0,0,0.5);
+      line-height: 1.6;
+      margin-bottom: 0.5rem;
+    }
+    .hero-sub {
+      font-family: 'VT323', monospace;
+      font-size: 1.4rem;
+      color: var(--text-dim);
+      margin-bottom: 2rem;
+    }
+
+    /* ── STATS BAR ── */
+    .stats-bar {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 3rem;
+      padding: 0 2rem;
+    }
+    .stat-pill {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      padding: 0.5rem 1.5rem;
+      display: flex; align-items: center; gap: 0.5rem;
+      font-size: 0.85rem;
+    }
+    .stat-pill strong { color: var(--green); font-size: 1rem; }
+
+    /* ── BONUS BOX ── */
+    .bonus-box {
+      max-width: 700px;
+      margin: 0 auto 3rem;
+      background: linear-gradient(135deg, rgba(251,191,36,0.08), rgba(251,191,36,0.02));
+      border: 1px solid rgba(251,191,36,0.25);
+      border-radius: 12px;
+      padding: 1.5rem 2rem;
+    }
+    .bonus-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--gold);
+      margin-bottom: 1rem;
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .bonus-box ul { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+    .bonus-box li {
+      font-size: 0.9rem;
+      color: var(--text-dim);
+      padding-left: 1rem;
+      position: relative;
+    }
+    .bonus-box li::before { content: '▸'; position: absolute; left: 0; color: var(--gold); }
+    .bonus-box strong { color: var(--text); }
+
+    /* ── FILTER TABS ── */
+    .filter-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      justify-content: center;
+      padding: 0 2rem;
+      margin-bottom: 2rem;
+    }
+    .filter-btn {
+      padding: 0.4rem 1.2rem;
+      border-radius: 50px;
+      border: 1px solid var(--border);
+      background: var(--bg2);
+      color: var(--text-dim);
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Inter', sans-serif;
+    }
+    .filter-btn:hover { border-color: #555; color: var(--text); }
+    .filter-btn.active { color: var(--bg); font-weight: 600; }
+    .filter-btn[data-rarity="Toutes"].active { background: var(--text); border-color: var(--text); }
+    .filter-btn[data-rarity="Commune"].active { background: var(--commune); border-color: var(--commune); }
+    .filter-btn[data-rarity="Rare"].active { background: var(--rare); border-color: var(--rare); }
+    .filter-btn[data-rarity="Épique"].active { background: var(--epique); border-color: var(--epique); }
+    .filter-btn[data-rarity="Légendaire"].active { background: var(--legendaire); border-color: var(--legendaire); }
+    .filter-btn[data-rarity="Mythique"].active { background: var(--mythique); border-color: var(--mythique); }
+
+    /* ── CARDS GRID ── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 1rem;
+      padding: 0 2rem 4rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.2rem 1rem;
+      display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+      transition: all 0.25s;
+      cursor: default;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute; inset: 0;
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+    .card:hover { transform: translateY(-3px); border-color: #555; }
+    .card:hover::before { opacity: 1; }
+
+    .card[data-rarity="Commune"]::before { background: linear-gradient(135deg, rgba(156,163,175,0.06), transparent); }
+    .card[data-rarity="Rare"]::before { background: linear-gradient(135deg, rgba(74,222,128,0.08), transparent); }
+    .card[data-rarity="Épique"]::before { background: linear-gradient(135deg, rgba(167,139,250,0.10), transparent); }
+    .card[data-rarity="Légendaire"]::before { background: linear-gradient(135deg, rgba(251,146,60,0.12), transparent); }
+    .card[data-rarity="Mythique"]::before { background: linear-gradient(135deg, rgba(248,113,113,0.15), transparent); }
+
+    .card[data-rarity="Rare"] { border-color: rgba(74,222,128,0.2); }
+    .card[data-rarity="Épique"] { border-color: rgba(167,139,250,0.2); }
+    .card[data-rarity="Légendaire"] { border-color: rgba(251,146,60,0.3); }
+    .card[data-rarity="Mythique"] { border-color: rgba(248,113,113,0.4); box-shadow: 0 0 20px rgba(248,113,113,0.1); }
+
+    .card-emoji { font-size: 2.2rem; line-height: 1; }
+    .card-name { font-size: 0.8rem; font-weight: 600; text-align: center; }
+    .card-id { font-size: 0.65rem; color: var(--text-dim); font-family: monospace; }
+    .card-desc { font-size: 0.7rem; color: var(--text-dim); text-align: center; line-height: 1.4; }
+    .rarity-badge {
+      font-size: 0.65rem;
+      font-weight: 600;
+      padding: 0.2rem 0.6rem;
+      border-radius: 50px;
+      margin-top: 0.2rem;
+    }
+    .rarity-badge.Commune { background: rgba(156,163,175,0.15); color: var(--commune); }
+    .rarity-badge.Rare { background: rgba(74,222,128,0.15); color: var(--rare); }
+    .rarity-badge.Épique { background: rgba(167,139,250,0.15); color: var(--epique); }
+    .rarity-badge.Légendaire { background: rgba(251,146,60,0.15); color: var(--legendaire); }
+    .rarity-badge.Mythique { background: rgba(248,113,113,0.15); color: var(--mythique); }
+
+    /* ── CLASSEMENT PAGE ── */
+    .classement-header {
+      text-align: center;
+      padding: 3rem 2rem 2rem;
+    }
+    .classement-title {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(0.8rem, 2.5vw, 1.2rem);
+      color: var(--gold);
+      text-shadow: 0 0 20px rgba(251,191,36,0.3);
+      margin-bottom: 0.5rem;
+    }
+    .classement-sub { color: var(--text-dim); font-size: 0.9rem; }
+
+    .leaderboard {
+      max-width: 700px;
+      margin: 0 auto 3rem;
+      padding: 0 2rem;
+    }
+    .lb-entry {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1.5rem;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 0.75rem;
+      transition: all 0.2s;
+    }
+    .lb-entry:hover { border-color: #444; transform: translateX(3px); }
+    .lb-entry:nth-child(1) { border-color: rgba(251,191,36,0.4); background: linear-gradient(135deg, rgba(251,191,36,0.06), var(--bg2)); }
+    .lb-entry:nth-child(2) { border-color: rgba(209,213,219,0.3); }
+    .lb-entry:nth-child(3) { border-color: rgba(180,130,80,0.3); }
+    .lb-rank { font-family: 'Press Start 2P', monospace; font-size: 0.55rem; min-width: 2.5rem; color: var(--text-dim); }
+    .lb-entry:nth-child(1) .lb-rank { color: var(--gold); }
+    .lb-entry:nth-child(2) .lb-rank { color: #d1d5db; }
+    .lb-entry:nth-child(3) .lb-rank { color: #b48250; }
+    .lb-name { flex: 1; font-weight: 600; font-size: 0.95rem; }
+    .lb-score { font-size: 0.8rem; color: var(--text-dim); text-align: right; }
+    .lb-score strong { color: var(--green); font-size: 1rem; display: block; }
+
+    .lb-placeholder {
+      text-align: center;
+      padding: 3rem;
+      color: var(--text-dim);
+      background: var(--bg2);
+      border: 1px dashed var(--border);
+      border-radius: 12px;
+      font-size: 0.9rem;
+    }
+
+    /* ── COMMANDS SECTION ── */
+    .commands-section {
+      max-width: 700px;
+      margin: 0 auto 2rem;
+      padding: 0 2rem;
+    }
+    .section-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-dim);
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .command-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem 1.5rem;
+      margin-bottom: 0.75rem;
+      display: flex; align-items: flex-start; gap: 1rem;
+    }
+    .cmd-slash {
+      font-family: monospace;
+      font-size: 1.2rem;
+      color: var(--blue);
+      font-weight: 700;
+      min-width: 1rem;
+    }
+    .cmd-name { font-weight: 600; font-size: 0.9rem; margin-bottom: 0.2rem; }
+    .cmd-desc { font-size: 0.8rem; color: var(--text-dim); }
+
+    /* ── TIPS ── */
+    .tips-section {
+      max-width: 700px;
+      margin: 0 auto 4rem;
+      padding: 0 2rem;
+    }
+    .tip { display: flex; gap: 1rem; align-items: flex-start; padding: 1rem; margin-bottom: 0.75rem; background: var(--bg2); border-radius: 10px; border: 1px solid var(--border); }
+    .tip-num { font-family: 'Press Start 2P', monospace; font-size: 0.6rem; color: var(--green); min-width: 2rem; text-align: center; padding-top: 0.1rem; }
+    .tip-text { font-size: 0.85rem; color: var(--text-dim); line-height: 1.5; }
+    .tip-text strong { color: var(--text); }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      padding: 2rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.8rem;
+      color: var(--text-dim);
+    }
+    footer a { color: var(--blue); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      display: none;
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(4px);
+      align-items: center; justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+    }
+    .modal-emoji { font-size: 3rem; margin-bottom: 1rem; }
+    .modal-name { font-weight: 700; font-size: 1.2rem; margin-bottom: 0.3rem; }
+    .modal-id { font-family: monospace; font-size: 0.8rem; color: var(--text-dim); margin-bottom: 0.8rem; }
+    .modal-desc { font-size: 0.9rem; color: var(--text-dim); line-height: 1.6; margin-bottom: 1.2rem; }
+    .modal-close { padding: 0.5rem 1.5rem; background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; color: var(--text); cursor: pointer; font-family: 'Inter', sans-serif; font-size: 0.85rem; }
+    .modal-close:hover { background: #333; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">ZinzinBot</div>
+  <div class="nav-links">
+    <button class="nav-link active" onclick="showPage('collection', this)">Collection</button>
+    <button class="nav-link" onclick="showPage('classement', this)">Classement</button>
+    <button class="nav-link" onclick="showPage('galerie', this)">🖼️ Galerie</button>
+    <a href="forge.html" class="nav-link" style="color:var(--gold);border-color:rgba(251,191,36,0.3);">⚒️ Forge</a>
+  </div>
+</nav>
+
+<!-- ══ PAGE COLLECTION ══ -->
+<div id="page-collection" class="page active">
+  <div class="hero">
+    <div class="hero-pixel">ZinzinBot</div>
+    <div class="hero-sub">Collection complète des cartes Minecraft</div>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat-pill">🃏 <strong>53</strong> Cartes au total</div>
+    <div class="stat-pill">⭐ <strong>5</strong> Raretés</div>
+    <div class="stat-pill">📦 <strong>3/jour</strong> Pack quotidien</div>
+  </div>
+
+  <div class="bonus-box" style="padding: 0 2rem; max-width: 760px; margin: 0 auto 2.5rem;">
+    <div style="background: linear-gradient(135deg, rgba(251,191,36,0.08), rgba(251,191,36,0.02)); border: 1px solid rgba(251,191,36,0.25); border-radius: 12px; padding: 1.5rem 2rem;">
+      <div class="bonus-title">🎲 Chance d'avoir une 4ᵉ carte</div>
+      <ul>
+        <li>Base : <strong>5%</strong> par défaut — <strong>15%</strong> si tu boost un serveur avec le bot</li>
+        <li>Bonus de streak : <strong>+0,5%</strong> par jour consécutif d'ouverture</li>
+        <li>Plafond : <strong>15%</strong> (non-boosters) — <strong>25%</strong> (boosters, atteint au jour 20)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="filter-tabs">
+    <button class="filter-btn active" data-rarity="Toutes" onclick="filterCards('Toutes', this)">Toutes</button>
+    <button class="filter-btn" data-rarity="Commune" onclick="filterCards('Commune', this)">⬜ Commune</button>
+    <button class="filter-btn" data-rarity="Rare" onclick="filterCards('Rare', this)">🟩 Rare</button>
+    <button class="filter-btn" data-rarity="Épique" onclick="filterCards('Épique', this)">🟪 Épique</button>
+    <button class="filter-btn" data-rarity="Légendaire" onclick="filterCards('Légendaire', this)">🟧 Légendaire</button>
+    <button class="filter-btn" data-rarity="Mythique" onclick="filterCards('Mythique', this)">🟥 Mythique</button>
+  </div>
+
+  <div class="cards-grid" id="cards-grid"></div>
+</div>
+
+<!-- ══ PAGE CLASSEMENT ══ -->
+<div id="page-classement" class="page">
+  <div class="classement-header">
+    <div class="classement-title">🏆 Classement</div>
+    <p class="classement-sub">Top 25 des meilleurs collectionneurs de cartes</p>
+  </div>
+
+  <div class="leaderboard">
+    <div class="lb-placeholder">
+      ⚔️ Le classement est en direct dans Discord.<br><br>
+      Utilisez <strong>/classement</strong> dans votre serveur pour voir le Top 25 !<br><br>
+      <span style="font-size: 0.8rem;">Les données sont sauvegardées localement dans la base de données du bot.</span>
+    </div>
+  </div>
+
+  <div class="commands-section">
+    <div class="section-title">📖 Commandes utiles</div>
+    <div class="command-card">
+      <div class="cmd-slash">/</div>
+      <div>
+        <div class="cmd-name">classement</div>
+        <div class="cmd-desc">Affiche le top 25 des collectionneurs dans Discord</div>
+      </div>
+    </div>
+    <div class="command-card">
+      <div class="cmd-slash">/</div>
+      <div>
+        <div class="cmd-name">collection</div>
+        <div class="cmd-desc">Voir toutes les cartes disponibles et leurs taux de drop</div>
+      </div>
+    </div>
+    <div class="command-card">
+      <div class="cmd-slash">/</div>
+      <div>
+        <div class="cmd-name">ouvrir</div>
+        <div class="cmd-desc">Ouvrir ton pack quotidien de 3 cartes (+ bonus possible)</div>
+      </div>
+    </div>
+    <div class="command-card">
+      <div class="cmd-slash">/</div>
+      <div>
+        <div class="cmd-name">echanger</div>
+        <div class="cmd-desc">Échanger un doublon contre une autre carte</div>
+      </div>
+    </div>
+    <div class="command-card">
+      <div class="cmd-slash">/</div>
+      <div>
+        <div class="cmd-name">ban / kick / mute / unmute / clear</div>
+        <div class="cmd-desc">Commandes de modération (réservées aux modérateurs)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tips-section">
+    <div class="section-title">⛏️ Astuces pour monter au classement</div>
+    <div class="tip">
+      <div class="tip-num">1</div>
+      <div class="tip-text"><strong>Ouvre tes packs chaque jour</strong><br>Tu as droit à 3 cartes par jour avec /ouvrir. Ne rate aucun jour !</div>
+    </div>
+    <div class="tip">
+      <div class="tip-num">2</div>
+      <div class="tip-text"><strong>Échange tes doublons</strong><br>Utilise /echanger pour troquer tes doublons contre des cartes qui te manquent.</div>
+    </div>
+    <div class="tip">
+      <div class="tip-num">3</div>
+      <div class="tip-text"><strong>Vise les cartes uniques</strong><br>Le nombre de cartes uniques est le critère principal. Diversifie ta collection au maximum !</div>
+    </div>
+    <div class="tip">
+      <div class="tip-num">4</div>
+      <div class="tip-text"><strong>Maintiens ton streak</strong><br>Plus tu ouvres de packs consécutifs, plus ta chance d'avoir une 4ème carte augmente.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL ══ -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-emoji" id="modal-emoji"></div>
+    <div class="modal-name" id="modal-name"></div>
+    <div class="modal-id" id="modal-id"></div>
+    <div id="modal-rarity-badge" style="margin-bottom: 0.8rem;"></div>
+    <div class="modal-desc" id="modal-desc"></div>
+    <button class="modal-close" onclick="document.getElementById('modal').classList.remove('open')">Fermer</button>
+  </div>
+</div>
+
+<footer>
+  ZinzinBot © 2026 — Bot Discord de collection de cartes Minecraft<br>
+  <a href="https://discord.com/developers/applications" target="_blank">Créer votre bot</a> · Fait avec ❤️ et <a href="https://claude.ai" target="_blank">Claude</a>
+</footer>
+
+<script>
+const CARDS = [
+  { id:'dirt',name:'Terre',rarity:'Commune',emoji:'🟫',desc:'Le bloc le plus humble de Minecraft.' },
+  { id:'stone',name:'Pierre',rarity:'Commune',emoji:'🪨',desc:'Partout dans les mines.' },
+  { id:'wood',name:'Bois de Chêne',rarity:'Commune',emoji:'🪵',desc:'La base de toute construction.' },
+  { id:'sand',name:'Sable',rarity:'Commune',emoji:'🏜️',desc:'Attention à la gravité !' },
+  { id:'gravel',name:'Gravier',rarity:'Commune',emoji:'⬛',desc:'Tombe aussi. Mauvaise surprise.' },
+  { id:'coal',name:'Charbon',rarity:'Commune',emoji:'🖤',desc:'Premier minerai trouvé.' },
+  { id:'apple',name:'Pomme',rarity:'Commune',emoji:'🍎',desc:'Un snack rapide en survie.' },
+  { id:'wheat',name:'Blé',rarity:'Commune',emoji:'🌾',desc:'Pour faire du pain.' },
+  { id:'egg',name:'Oeuf',rarity:'Commune',emoji:'🥚',desc:'Lancez-le sur vos amis.' },
+  { id:'feather',name:'Plume',rarity:'Commune',emoji:'🪶',desc:'Pour fabriquer des flèches.' },
+  { id:'bone',name:'Os',rarity:'Commune',emoji:'🦴',desc:'Dressez un chien !' },
+  { id:'string',name:'Fil',rarity:'Commune',emoji:'🧵',desc:'Provient des araignées.' },
+  { id:'leather',name:'Cuir',rarity:'Commune',emoji:'🟤',desc:'Première armure accessible.' },
+  { id:'stick',name:'Bâton',rarity:'Commune',emoji:'🥢',desc:'Indispensable pour les outils.' },
+  { id:'torch',name:'Torche',rarity:'Commune',emoji:'🔦',desc:'Éclairez vos donjons.' },
+  { id:'bucket',name:'Seau',rarity:'Commune',emoji:'🪣',desc:'Eau, lave, ou poisson.' },
+  { id:'fishing_rod',name:'Canne à Pêche',rarity:'Commune',emoji:'🎣',desc:'Pour pêcher tranquillement.' },
+  { id:'compass',name:'Boussole',rarity:'Commune',emoji:'🧭',desc:'Pointe vers le spawn.' },
+  { id:'map',name:'Carte',rarity:'Commune',emoji:'🗺️',desc:'Explorez le monde.' },
+  { id:'bread',name:'Pain',rarity:'Commune',emoji:'🍞',desc:'Nourriture de survie basique.' },
+  { id:'iron_sword',name:'Épée de Fer',rarity:'Rare',emoji:'⚔️',desc:'Votre première vraie arme.' },
+  { id:'iron_pickaxe',name:'Pioche de Fer',rarity:'Rare',emoji:'⛏️',desc:'Pour miner le diamant.' },
+  { id:'iron_armor',name:'Armure de Fer',rarity:'Rare',emoji:'🛡️',desc:'Protection solide.' },
+  { id:'bow',name:'Arc',rarity:'Rare',emoji:'🏹',desc:'Combat à distance.' },
+  { id:'golden_apple',name:'Pomme en Or',rarity:'Rare',emoji:'✨',desc:'Régénération et absorption.' },
+  { id:'obsidian',name:'Obsidienne',rarity:'Rare',emoji:'🟣',desc:'Pour construire un portail du Nether.' },
+  { id:'lapis',name:'Lapis-Lazuli',rarity:'Rare',emoji:'💙',desc:'Pour enchanter vos objets.' },
+  { id:'redstone',name:'Redstone',rarity:'Rare',emoji:'❤️',desc:'Le courant électrique de Minecraft.' },
+  { id:'saddle',name:'Selle',rarity:'Rare',emoji:'🐎',desc:'Montez un cheval ou un cochon.' },
+  { id:'name_tag',name:'Étiquette',rarity:'Rare',emoji:'🏷️',desc:'Nommez vos monstres.' },
+  { id:'blaze_rod',name:'Bâton de Blaze',rarity:'Rare',emoji:'🔥',desc:'Vient des profondeurs du Nether.' },
+  { id:'ender_pearl',name:"Perle de l'Ender",rarity:'Rare',emoji:'🔮',desc:'Téléportation instantanée.' },
+  { id:'slimeball',name:'Boule de Slime',rarity:'Rare',emoji:'🟢',desc:'Rebondissante et visqueuse.' },
+  { id:'nether_star',name:'Étoile du Nether',rarity:'Rare',emoji:'⭐',desc:'Pour invoquer le Wither.' },
+  { id:'trident',name:'Trident',rarity:'Rare',emoji:'🔱',desc:'Arme des profondeurs océaniques.' },
+  { id:'diamond',name:'Diamant',rarity:'Épique',emoji:'💎',desc:'Le minerai tant convoité.' },
+  { id:'diamond_sword',name:'Épée de Diamant',rarity:'Épique',emoji:'🗡️',desc:'Symbole de puissance.' },
+  { id:'diamond_armor',name:'Armure de Diamant',rarity:'Épique',emoji:'💠',desc:'Protection maximale classique.' },
+  { id:'elytra',name:'Élytre',rarity:'Épique',emoji:'🦋',desc:'Volez à travers le monde !' },
+  { id:'totem',name:"Totem d'Immortalité",rarity:'Épique',emoji:'🗿',desc:'Revenez des morts une fois.' },
+  { id:'enchanted_book',name:'Livre Enchanté',rarity:'Épique',emoji:'📖',desc:'Sagesse ancienne et puissante.' },
+  { id:'beacon',name:'Balise',rarity:'Épique',emoji:'🏮',desc:'Puissance, vitesse et régénération.' },
+  { id:'shulker_box',name:'Boîte de Shulker',rarity:'Épique',emoji:'📦',desc:'Stockage portable ultime.' },
+  { id:'conduit',name:'Conduit',rarity:'Épique',emoji:'🌀',desc:'Respirez sous l\'eau indéfiniment.' },
+  { id:'heart_of_sea',name:'Cœur de la Mer',rarity:'Épique',emoji:'🐚',desc:'Trésor des profondeurs.' },
+  { id:'netherite_ingot',name:'Lingot de Nétherite',rarity:'Légendaire',emoji:'🔶',desc:'Le métal ultime de Minecraft.' },
+  { id:'netherite_sword',name:'Épée de Nétherite',rarity:'Légendaire',emoji:'🌑',desc:'La lame la plus destructrice.' },
+  { id:'netherite_armor',name:'Armure de Nétherite',rarity:'Légendaire',emoji:'⬛',desc:'Résiste même à la lave.' },
+  { id:'dragon_egg',name:'Oeuf de Dragon',rarity:'Légendaire',emoji:'🐉',desc:"Le trophée ultime de l'End." },
+  { id:'enchanted_golden_apple',name:'Pomme Dorée Enchantée',rarity:'Légendaire',emoji:'🍏',desc:"L'Notch Apple. Légendaire." },
+  { id:'ender_dragon',name:'Ender Dragon',rarity:'Mythique',emoji:'🐲',desc:'Le boss final de Minecraft.' },
+  { id:'wither',name:'Wither',rarity:'Mythique',emoji:'💀',desc:'La terreur du Nether.' },
+  { id:'steve',name:'Steve',rarity:'Mythique',emoji:'👤',desc:'Le héros original. Le plus rare de tous.' },
+];
+
+let currentFilter = 'Toutes';
+
+function renderCards(filter) {
+  const grid = document.getElementById('cards-grid');
+  const filtered = filter === 'Toutes' ? CARDS : CARDS.filter(c => c.rarity === filter);
+  grid.innerHTML = filtered.map(c => `
+    <div class="card" data-rarity="${c.rarity}" onclick="openModal('${c.id}')">
+      <div class="card-emoji">${c.emoji}</div>
+      <div class="card-name">${c.name}</div>
+      <div class="card-id">${c.id}</div>
+      <div class="rarity-badge ${c.rarity}">${c.rarity}</div>
+      <div class="card-desc">${c.desc}</div>
+    </div>
+  `).join('');
+}
+
+function filterCards(rarity, btn) {
+  currentFilter = rarity;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderCards(rarity);
+}
+
+function showPage(name, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+
+function openModal(cardId) {
+  const card = CARDS.find(c => c.id === cardId);
+  if (!card) return;
+  document.getElementById('modal-emoji').textContent = card.emoji;
+  document.getElementById('modal-name').textContent = card.name;
+  document.getElementById('modal-id').textContent = `ID : ${card.id}`;
+  document.getElementById('modal-desc').textContent = card.desc;
+  document.getElementById('modal-rarity-badge').innerHTML = `<span class="rarity-badge ${card.rarity}">${card.rarity}</span>`;
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeModal(e) {
+  if (e.target.id === 'modal') document.getElementById('modal').classList.remove('open');
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') document.getElementById('modal').classList.remove('open');
+});
+
+renderCards('Toutes');
+
+// ═══════════════════════════════════════════
+// GALERIE
+// ═══════════════════════════════════════════
+const GALLERY_KEY = 'zinzinbot_gallery';
+
+function getGallery(){
+  try{ return JSON.parse(localStorage.getItem(GALLERY_KEY)||'[]'); }
+  catch(e){ return []; }
+}
+
+function renderGallery(){
+  const grid = document.getElementById('gallery-grid');
+  const empty = document.getElementById('gallery-empty');
+  const count = document.getElementById('gallery-count');
+  const items = getGallery();
+
+  if(!grid) return;
+
+  if(items.length === 0){
+    grid.innerHTML='';
+    if(empty) empty.style.display='block';
+    if(count) count.textContent='Aucune carte';
+    return;
+  }
+  if(empty) empty.style.display='none';
+  if(count) count.textContent = items.length + ' carte' + (items.length>1?'s':'') + ' dans la galerie';
+
+  grid.innerHTML = items.map((item,i) => `
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:all 0.25s;cursor:pointer;" onmouseover="this.style.transform='translateY(-4px)';this.style.borderColor='#555'" onmouseout="this.style.transform='';this.style.borderColor='var(--border)'" onclick="openLightbox(${i})">
+      <div style="background:#111;display:flex;align-items:center;justify-content:center;min-height:120px;overflow:hidden;">
+        <img src="${item.imageData}" alt="${item.cardName}" style="width:100%;object-fit:contain;max-height:250px;" />
+      </div>
+      <div style="padding:0.8rem;">
+        <div style="font-weight:600;font-size:0.85rem;margin-bottom:0.2rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${item.cardName}</div>
+        <div style="font-size:0.7rem;color:var(--text-dim);margin-bottom:0.4rem;">${item.cardCat || ''}</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <span style="font-size:0.7rem;color:var(--text-dim);">par <strong style="color:var(--text);">${item.author}</strong></span>
+          <span style="font-size:0.65rem;color:var(--text-dim);">${item.date}</span>
+        </div>
+        ${item.desc ? `<div style="font-size:0.7rem;color:var(--text-dim);margin-top:0.4rem;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${item.desc}</div>` : ''}
+        <button onclick="event.stopPropagation();deleteCard(${item.id})" style="margin-top:0.5rem;width:100%;padding:0.3rem;background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--text-dim);font-size:0.7rem;cursor:pointer;font-family:inherit;" onmouseover="this.style.borderColor='#f87171';this.style.color='#f87171'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-dim)'">🗑️ Supprimer</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function deleteCard(id){
+  if(!confirm('Supprimer cette carte ?')) return;
+  const gallery = getGallery().filter(c => c.id !== id);
+  localStorage.setItem(GALLERY_KEY, JSON.stringify(gallery));
+  renderGallery();
+}
+
+function clearGallery(){
+  if(!confirm('Vider toute la galerie ? Cette action est irréversible.')) return;
+  localStorage.removeItem(GALLERY_KEY);
+  renderGallery();
+}
+
+function openLightbox(index){
+  const items = getGallery();
+  const item = items[index];
+  if(!item) return;
+  const lb = document.getElementById('lightbox');
+  const img = document.getElementById('lightbox-img');
+  const info = document.getElementById('lightbox-info');
+  img.src = item.imageData;
+  info.innerHTML = `<strong style="font-size:1rem;">${item.cardName}</strong><br><span style="font-size:0.85rem;opacity:0.7;">par ${item.author} · ${item.date}</span>${item.desc ? '<br><span style="font-size:0.8rem;opacity:0.6;margin-top:0.3rem;display:block;">'+item.desc+'</span>' : ''}`;
+  lb.style.display='flex';
+}
+
+function closeLightbox(e){
+  if(e.target.id==='lightbox' || e.target.id==='lightbox-img'){
+    document.getElementById('lightbox').style.display='none';
+  }
+}
+
+// Re-render gallery when switching to that page
+const origShowPage = showPage;
+window.showPage = function(name, btn){
+  origShowPage(name, btn);
+  if(name === 'galerie') renderGallery();
+};
+
+</script>
+
+<!-- ══ PAGE GALERIE ══ -->
+<div id="page-galerie" class="page">
+  <div class="classement-header">
+    <div class="classement-title" style="color:var(--purple);">🖼️ Galerie des Créateurs</div>
+    <p class="classement-sub">Cartes personnalisées créées par la communauté avec la Forge</p>
+  </div>
+
+  <div style="text-align:center;margin-bottom:2rem;padding:0 2rem;">
+    <a href="forge.html" style="display:inline-flex;align-items:center;gap:0.6rem;padding:0.7rem 2rem;background:linear-gradient(135deg,rgba(251,191,36,0.12),rgba(251,191,36,0.04));border:1px solid rgba(251,191,36,0.35);border-radius:10px;color:var(--gold);text-decoration:none;font-weight:600;font-size:0.9rem;transition:all 0.2s;" onmouseover="this.style.background='linear-gradient(135deg,rgba(251,191,36,0.2),rgba(251,191,36,0.08))'" onmouseout="this.style.background='linear-gradient(135deg,rgba(251,191,36,0.12),rgba(251,191,36,0.04))'">
+      ⚒️ Ouvrir la Forge de Cartes
+    </a>
+    <p style="color:var(--text-dim);font-size:0.8rem;margin-top:0.6rem;">Créez votre carte dans la Forge, puis cliquez sur "📤 Publier dans la Galerie"</p>
+  </div>
+
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:0 2rem;margin-bottom:1rem;flex-wrap:wrap;gap:0.5rem;">
+    <div id="gallery-count" style="font-size:0.85rem;color:var(--text-dim);">Chargement...</div>
+    <button onclick="clearGallery()" style="padding:0.35rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text-dim);font-size:0.75rem;cursor:pointer;font-family:inherit;" onmouseover="this.style.borderColor='#f87171';this.style.color='#f87171'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-dim)'">🗑️ Vider la galerie</button>
+  </div>
+
+  <div id="gallery-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1.2rem;padding:0 2rem 4rem;max-width:1200px;margin:0 auto;"></div>
+
+  <div id="gallery-empty" style="display:none;text-align:center;padding:4rem 2rem;color:var(--text-dim);">
+    <div style="font-size:3rem;margin-bottom:1rem;">🎨</div>
+    <p style="font-size:1rem;margin-bottom:0.5rem;">La galerie est vide pour l'instant.</p>
+    <p style="font-size:0.85rem;">Créez votre première carte dans la <a href="forge.html" style="color:var(--gold);">Forge</a> !</p>
+  </div>
+
+  <!-- Lightbox -->
+  <div id="lightbox" style="display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.85);backdrop-filter:blur(6px);align-items:center;justify-content:center;flex-direction:column;gap:1rem;" onclick="closeLightbox(event)">
+    <img id="lightbox-img" src="" style="max-height:80vh;max-width:90vw;border-radius:14px;box-shadow:0 20px 80px rgba(0,0,0,0.8);" />
+    <div id="lightbox-info" style="text-align:center;color:var(--text);"></div>
+  </div>
+</div>
+
+</body>
+</html>
